@@ -1,0 +1,29 @@
+<div class="container d-flex container-fluid">
+    <form method="get" class="container d-flex">
+        <input
+                class="form-control"
+                type="search"
+                name="q"
+                placeholder="Search ads for you"
+                aria-label="Search"
+                value="{{ request.GET.q }}"
+        />
+
+        <select name="region"
+                id="region"
+                class="form-select"
+                onchange="this.form.submit()"
+        >
+            <option value="" {% if not request.GET.region %}selected{% endif %}>
+                All Poland
+            </option>
+            {% for voivodeship in voivodeships %}
+            <option value="{{ voivodeship }}"
+                    {% if request.GET.region == voivodeship %}selected{% endif %}>
+                {{ voivodeship }}
+            </option>
+            {% endfor%}
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+</div>
