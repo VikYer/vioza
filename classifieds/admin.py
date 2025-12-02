@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ad, Category
+from .models import Ad, Category, Subcategory
 
 
 @admin.register(Ad)
@@ -18,6 +18,15 @@ class AdAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     list_display = ('title', 'slug', 'icon',)
+    search_fields = ('title',)
+    ordering = ('title',)
+    list_display_links = ('title',)
+
+
+@admin.register(Subcategory)
+class SubcategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+    list_display = ('title', 'slug')
     search_fields = ('title',)
     ordering = ('title',)
     list_display_links = ('title',)

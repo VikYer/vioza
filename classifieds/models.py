@@ -16,8 +16,7 @@ class Ad(models.Model):
         PUBLISHED = 'PD', 'Published'
 
     title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=65,
-                            db_index=True,
+    slug = models.SlugField(db_index=True,
                             blank=True,
                             editable=False)
     author = models.ForeignKey(User,
@@ -60,8 +59,24 @@ class Ad(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=55, unique=True)
+    slug = models.SlugField(unique=True)
     icon = models.ImageField(upload_to='core/category_icons/')
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
+
+class Subcategory(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    category = models.ForeignKey('Category',
+                                 on_delete=models.CASCADE,
+                                 related_name='subcategories')
 
     def __str__(self):
         return self.title
