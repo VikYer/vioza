@@ -23,7 +23,7 @@ class Ad(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='ads')
-    category = models.ForeignKey(Category,
+    category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE,
                                  related_name='ads')
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -45,7 +45,23 @@ class Ad(models.Model):
         indexes = [
             models.Index(fields=['-publish'])
         ]
-        unique_together = ('author', 'slug')
+        constraints = [
+            models.UniqueConstraint(fields=['author', 'slug'], name='unique_author_slug')
+        ]
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
+
+
+class Category(models.Model):
+    title = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=55, unique=True)
+    icon = models.ImageField(upload_to='core/category_icons/')
 
     def __str__(self):
         return self.title
