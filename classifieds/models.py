@@ -1,8 +1,11 @@
+import os
+
 from django.db import models
 
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.timezone import now
 
 
 class PublishedManager(models.Manager):
@@ -85,3 +88,24 @@ class Subcategory(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
+
+
+def ad_images_upload_to(instance, filename):
+    """
+    Returns the path to save the image:
+    ads/images/YYYY/MM/DD/<ad_id/<filename>
+    """
+    date_path = now().strftime('%Y/%m/%d')
+    return os.path.join('ads', 'images', date_path, str(instance.ad.id), filename)
+
+
+class AdImage(models.Model):
+    ad = models.ForeignKey('Ad',
+                           on_delete=models.CASCADE,
+                           related_name='images'
+                           )
+    image = models.ImageField(upload_to=ad_images_upload_to)
+    is_main = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.ad.title}_{self.pk}'

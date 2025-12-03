@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ad, Category, Subcategory
+from .models import Ad, Category, Subcategory, AdImage
 
 
 @admin.register(Ad)
@@ -30,3 +30,11 @@ class SubcategoryAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     ordering = ('title',)
     list_display_links = ('title',)
+
+
+@admin.register(AdImage)
+class AdImageAdmin(admin.ModelAdmin):
+    list_display = ('ad', 'id', 'is_main')
+    list_filter = ('ad', 'is_main')
+    readonly_fields = ('id',)
+    list_display_links = ('ad',)
