@@ -17,6 +17,8 @@ class Ad(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
         PUBLISHED = 'PD', 'Published'
+        ARCHIVED = 'AR', 'Archived'
+        EXPIRED = 'EX', 'Expired'
 
     title = models.CharField(max_length=50)
     slug = models.SlugField(db_index=True,
@@ -25,10 +27,14 @@ class Ad(models.Model):
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='ads')
+    show_phone = models.BooleanField(default=False)
     category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE,
                                  related_name='ads')
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    favorites = models.ManyToManyField('User',
+                                       blank=True,
+                                       related_name='favorite_ads')
     region = models.ForeignKey('Region',
                                on_delete=models.SET_NULL,
                                null=True,
