@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Ad, Category, Subcategory, AdImage
+from .models import Ad, Category, Subcategory, AdImage, Region, City
 
 
 @admin.register(Ad)
@@ -38,3 +38,16 @@ class AdImageAdmin(admin.ModelAdmin):
     list_filter = ('ad', 'is_main')
     readonly_fields = ('id',)
     list_display_links = ('ad',)
+
+
+@admin.register(Region)
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    ordering = ('name',)
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    ordering = ('name',)
+    list_filter = ('region',)
