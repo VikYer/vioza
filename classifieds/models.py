@@ -1,5 +1,8 @@
 import os
+from io import BytesIO
 
+from PIL import Image
+from django.core.files.base import ContentFile
 from django.db import models
 
 from django.contrib.auth.models import User
@@ -104,13 +107,21 @@ class Subcategory(models.Model):
         return super().save(*args, **kwargs)
 
 
-def ad_images_upload_to(instance, filename):
+def ad_images_upload_to(instance, filename) -> str:
     """
     Returns the path to save the image:
     ads/images/YYYY/MM/DD/<ad_id/<filename>
     """
     date_path = now().strftime('%Y/%m/%d')
     return os.path.join('ads', 'images', date_path, str(instance.ad.id), filename)
+
+def ad_webp_images_upload_to(instance, filename) -> str:
+    """
+    Returns the path to save the webp image:
+    ads/images/YYYY/MM/DD/<ad_id/webp/<filename>
+    """
+    date_path = now().strftime('%Y/%m/%d')
+    return os.path.join('ads', 'images', date_path, str(instance.ad.id), 'webp',filename)
 
 
 class AdImage(models.Model):
@@ -119,11 +130,31 @@ class AdImage(models.Model):
                            related_name='images'
                            )
     image = models.ImageField(upload_to=ad_images_upload_to)
+    image_webp = models.ImageField(upload_to=ad_webp_images_upload_to,
+                                   editable=False,
+                                   null=True,
+                                   blank=True)
     is_main = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.ad.title}_{self.pk}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.image and not self.image_webp:
+            self.convert_to_webp()
+
+    def convert_to_webp(self) -> None:
+        """Convert image in webp extension"""
+        img = Image.open(self.image.path).convert('RGB')
+        buffer = BytesIO()
+        img.save(buffer, format='WEBP', quality=85)
+
+        webp_name = self.image.name.rsplit('.', 1)[0] + '.webp'
+        self.image_webp.save(webp_name, ContentFile(buffer.getvalue()), save=False)
+
+        super().save()
 
 class Region(models.Model):
     name = models.CharField(max_length=100)
@@ -138,8 +169,8 @@ class Region(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=100)
     region = models.ForeignKey('Region',
-                        on_delete=models.CASCADE,
-                        related_name='cities')
+                               on_delete=models.CASCADE,
+                               related_name='cities')
 
     class Meta:
         ordering = ('name',)
