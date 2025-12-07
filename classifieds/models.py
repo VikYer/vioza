@@ -1,7 +1,7 @@
 import os
 from io import BytesIO
 
-from PIL import Image
+from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
 from django.db import models
 
@@ -115,13 +115,23 @@ def ad_images_upload_to(instance, filename) -> str:
     date_path = now().strftime('%Y/%m/%d')
     return os.path.join('ads', 'images', date_path, str(instance.ad.id), filename)
 
+
 def ad_webp_images_upload_to(instance, filename) -> str:
     """
     Returns the path to save the webp image:
     ads/images/YYYY/MM/DD/<ad_id/webp/<filename>
     """
     date_path = now().strftime('%Y/%m/%d')
-    return os.path.join('ads', 'images', date_path, str(instance.ad.id), 'webp',filename)
+    return os.path.join('ads', 'images', date_path, str(instance.ad.id), 'webp', filename)
+
+
+def ad_thumbnail_upload_to(instance, filename) -> str:
+    """
+    Returns the path to save the thumbnail:
+    ads/images/YYYY/MM/DD/<ad_id/thumbs/<filename>
+    """
+    date_path = now().strftime('%Y/%m/%d')
+    return os.path.join('ads', 'images', date_path, str(instance.ad.id), 'thumbs', filename)
 
 
 class AdImage(models.Model):
@@ -134,6 +144,10 @@ class AdImage(models.Model):
                                    editable=False,
                                    null=True,
                                    blank=True)
+    thumbnail = models.ImageField(upload_to=ad_thumbnail_upload_to,
+                                  editable=False,
+                                  null=True,
+                                  blank=True)
     is_main = models.BooleanField(default=False)
 
     def __str__(self):
@@ -142,8 +156,18 @@ class AdImage(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+        updated = False
+
         if self.image and not self.image_webp:
             self.convert_to_webp()
+            updated = True
+
+        if self.image and not self.thumbnail:
+            self.generate_thumbnail()
+            updated = True
+
+        if updated:
+            super().save(update_fields=['image_webp', 'thumbnail'])
 
     def convert_to_webp(self) -> None:
         """Convert image in webp extension"""
@@ -155,6 +179,23 @@ class AdImage(models.Model):
         self.image_webp.save(webp_name, ContentFile(buffer.getvalue()), save=False)
 
         super().save()
+
+    def generate_thumbnail(self) -> None:
+        """
+        Generate 300x300 thumbnail in webp format
+        """
+        img = Image.open(self.image.path).convert('RGB')
+
+        img = ImageOps.fit(img, (300, 300), Image.LANCZOS)
+
+        buffer = BytesIO()
+        img.save(buffer, format='WEBP', quality=85)
+
+        thumb_name = self.image.name.rsplit('.', 1)[0] + '_thumb.webp'
+        self.thumbnail.save(thumb_name, ContentFile(buffer.getvalue()), save=False)
+
+        super().save()
+
 
 class Region(models.Model):
     name = models.CharField(max_length=100)
