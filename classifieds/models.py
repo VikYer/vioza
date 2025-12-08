@@ -137,8 +137,7 @@ def ad_thumbnail_upload_to(instance, filename) -> str:
 class AdImage(models.Model):
     ad = models.ForeignKey('Ad',
                            on_delete=models.CASCADE,
-                           related_name='images'
-                           )
+                           related_name='images')
     image = models.ImageField(upload_to=ad_images_upload_to)
     image_webp = models.ImageField(upload_to=ad_webp_images_upload_to,
                                    editable=False,
@@ -154,47 +153,36 @@ class AdImage(models.Model):
         return f'{self.ad.title}_{self.pk}'
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        old_image = None
+        if not is_new:
+            try:
+                old_image = AdImage.objects.get(pk=self.pk).image
+            except AdImage.DoesNotExist:
+                pass
+
         super().save(*args, **kwargs)
 
-        updated = False
-
-        if self.image and not self.image_webp:
-            self.convert_to_webp()
-            updated = True
-
-        if self.image and not self.thumbnail:
-            self.generate_thumbnail()
-            updated = True
-
-        if updated:
+        if is_new or (old_image and old_image.name != self.image.name):
+            self._generate_webp_and_thumbnail()
             super().save(update_fields=['image_webp', 'thumbnail'])
 
-    def convert_to_webp(self) -> None:
-        """Convert image in webp extension"""
-        img = Image.open(self.image.path).convert('RGB')
-        buffer = BytesIO()
-        img.save(buffer, format='WEBP', quality=85)
-
-        webp_name = self.image.name.rsplit('.', 1)[0] + '.webp'
-        self.image_webp.save(webp_name, ContentFile(buffer.getvalue()), save=False)
-
-        super().save()
-
-    def generate_thumbnail(self) -> None:
-        """
-        Generate 300x300 thumbnail in webp format
-        """
+    def _generate_webp_and_thumbnail(self) -> None:
+        """Convert image in webp extension and generate 300x300 thumbnail"""
         img = Image.open(self.image.path).convert('RGB')
 
-        img = ImageOps.fit(img, (300, 300), Image.LANCZOS)
+        # WEBP
+        buffer_webp = BytesIO()
+        img.save(buffer_webp, format='WEBP', quality=85)
+        webp_name = self.image.name.rsplit('.', 1)[0] + f'_{self.pk}.webp'
+        self.image_webp.save(webp_name, ContentFile(buffer_webp.getvalue()), save=False)
 
-        buffer = BytesIO()
-        img.save(buffer, format='WEBP', quality=85)
-
-        thumb_name = self.image.name.rsplit('.', 1)[0] + '_thumb.webp'
-        self.thumbnail.save(thumb_name, ContentFile(buffer.getvalue()), save=False)
-
-        super().save()
+        # THUMBNAIL 300x300
+        thumbnail_img = ImageOps.fit(img, (300, 300), Image.LANCZOS)
+        buffer_thumb = BytesIO()
+        thumbnail_img.save(buffer_thumb, format='WEBP', quality=85)
+        thumb_name = self.image.name.rsplit('.', 1)[0] + f'_{self.pk}_thumb.webp'
+        self.thumbnail.save(thumb_name, ContentFile(buffer_thumb.getvalue()), save=False)
 
 
 class Region(models.Model):
