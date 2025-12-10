@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
+{% load classified_tags %}
+
 {% block content%}
-<section id="search">
+
+<section id="search" class="mb-3">
     {% include "core/includes/_search.html" %}
 </section>
+
+<section id="category_list">
+    {% display_category_list %}
+</section>
+
 {% endblock %}

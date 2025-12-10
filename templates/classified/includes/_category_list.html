@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row row-cols-2 row-cols-md-6 row-cols-lg-8 row-cols-xl-12 justify-content-center">
+        {% for category in categories %}
+        <div class="col text-center">
+            <div class="card mb-3">
+                {% if category.icon %}
+                <img src="{{ category.icon.url }}" alt="{{ category }}">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{ category }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
