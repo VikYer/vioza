@@ -2,7 +2,8 @@
     <div class="row row-cols-2 row-cols-md-6 row-cols-lg-8 row-cols-xl-12 justify-content-center">
         {% for category in categories %}
         <div class="col text-center">
-            <div class="card mb-3">
+
+            <div class="card mb-3 category-card" data-category-id="{{ category.id }}">
                 {% if category.icon %}
                 <img src="{{ category.icon.url }}" alt="{{ category }}">
                 {% endif %}
@@ -10,6 +11,17 @@
                     <p class="card-text">{{ category }}</p>
                 </div>
             </div>
+
+            <div class="subcategory-list d-none" id="subcategory-{{ category.id }}">
+                <ul class="list-group mt-2">
+                    {% for sub in category.subcategories.all %}
+                    <li class="list-group-item">
+                        {{ sub.title }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
         {% endfor %}
     </div>
