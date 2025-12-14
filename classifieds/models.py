@@ -34,6 +34,11 @@ class Ad(models.Model):
     category = models.ForeignKey('Category',
                                  on_delete=models.CASCADE,
                                  related_name='ads')
+    subcategory = models.ForeignKey('Subcategory',
+                                    on_delete=models.SET_NULL,
+                                    blank=True,
+                                    null=True,
+                                    related_name='ads')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     favorites = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        blank=True,
