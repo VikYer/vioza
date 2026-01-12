@@ -3,7 +3,13 @@
         {% for category in categories %}
         <div class="col text-center">
 
-            <div class="card mb-3 category-card" data-category-id="{{ category.id }}">
+            <div class="card mb-3 category-card"
+                 data-category-id="{{ category.id }}"
+                 data-subcategories='[
+                    {% for sub in category.subcategories.all %}
+                        {"id": "{{ sub.id }}", "title": "{{ sub.title }}"}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                 ]'>
                 {% if category.icon %}
                 <img src="{{ category.icon.url }}" alt="{{ category }}">
                 {% endif %}
@@ -12,17 +18,13 @@
                 </div>
             </div>
 
-            <div class="subcategory-list d-none" id="subcategory-{{ category.id }}">
-                <ul class="list-group mt-2">
-                    {% for sub in category.subcategories.all %}
-                    <li class="list-group-item">
-                        {{ sub.title }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-
         </div>
         {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div id="subcategory-container" class="d-none">
+        <div class="row" id="subcategory-row"></div>
     </div>
 </div>

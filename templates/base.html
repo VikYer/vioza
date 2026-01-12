@@ -42,24 +42,33 @@
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const cards = document.querySelectorAll('.category-card');
+document.addEventListener('DOMContentLoaded', function () {
 
-        cards.forEach(card => {
-            card.addEventListener('click', () => {
-                const categoryId = card.dataset.categoryId;
-                const subList = document.getElementById(`subcategory-${categoryId}`);
+    const container = document.getElementById('subcategory-container');
+    const row = document.getElementById('subcategory-row');
 
-                document.querySelectorAll('.subcategory-list').forEach(el => {
-                    if (el !== subList) {
-                        el.classList.add('d-none');
-                    }
-                });
+    document.addEventListener('click', function (e) {
+        const card = e.target.closest('.category-card');
+        if (!card) return;
 
-                subList.classList.toggle('d-none');
-            });
+        const subs = JSON.parse(card.dataset.subcategories);
+
+        row.innerHTML = '';
+
+        subs.forEach(sub => {
+            row.innerHTML += `
+                <div class="col-md-4 mb-2">
+                    <div class="list-group-item">
+                        ${sub.title}
+                    </div>
+                </div>
+            `;
         });
+
+        container.classList.remove('d-none');
     });
+
+});
 </script>
 
 </body>
