@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row row-cols-2 row-cols-md-6 row-cols-lg-8 row-cols-xl-12 justify-content-center">
+    <div class="row row-cols-3 row-cols-md-6 row-cols-lg-10 row-cols-xl-12 justify-content-center">
         {% for category in categories %}
         <div class="col text-center">
 
@@ -11,7 +11,9 @@
                     {% endfor %}
                  ]'>
                 {% if category.icon %}
-                <img src="{{ category.icon.url }}" alt="{{ category }}">
+                <div class="d-flex justify-content-center mt-2">
+                    <img src="{{ category.icon.url }}" alt="{{ category }}" width="40%">
+                </div>
                 {% endif %}
                 <div class="card-body">
                     <p class="card-text">{{ category }}</p>
