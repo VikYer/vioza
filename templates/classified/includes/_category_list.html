@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="row row-cols-3 row-cols-md-6 row-cols-lg-10 row-cols-xl-12 justify-content-center">
+    <div class="category-grid justify-content-center">
         {% for category in categories %}
         <div class="col text-center">
 
-            <div class="card mb-3 category-card"
+            <div class="card mb-1 category-card"
                  data-category-id="{{ category.id }}"
                  data-subcategories='[
                     {% for sub in category.subcategories.all %}
