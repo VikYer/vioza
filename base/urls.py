@@ -22,6 +22,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls', namespace='index')),
+    path('ajax/', include('classifieds.urls_ajax', namespace='ajax')),
 ]
 
 if settings.DEBUG:

@@ -1,22 +1,20 @@
 <div class="container">
     <div class="category-grid justify-content-center">
         {% for category in categories %}
-        <div class="col text-center">
+        <div class="text-center">
 
-            <div class="card mb-1 category-card"
+            <div class="card mb-2 category-card"
                  data-category-id="{{ category.id }}"
-                 data-subcategories='[
-                    {% for sub in category.subcategories.all %}
-                        {"id": "{{ sub.id }}", "title": "{{ sub.title }}"}{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                 ]'>
+                 data-category-title="{{ category.title }}">
+
                 {% if category.icon %}
                 <div class="d-flex justify-content-center mt-2">
-                    <img src="{{ category.icon.url }}" alt="{{ category }}" width="40%">
+                    <img src="{{ category.icon.url }}" alt="{{ category.title }}" width="40%">
                 </div>
                 {% endif %}
-                <div class="card-body">
-                    <p class="card-text">{{ category }}</p>
+
+                <div class="card-body p-2">
+                    <p class="card-text mb-0">{{ category.title }}</p>
                 </div>
             </div>
 
@@ -25,8 +23,9 @@
     </div>
 </div>
 
-<div class="container mt-4">
-    <div id="subcategory-container" class="d-none">
-        <div class="row" id="subcategory-row"></div>
-    </div>
+<!-- SUBCATEGORY CONTAINER -->
+<div class="container mt-4 d-none" id="subcategory-container">
+    <h5 id="subcategory-title"></h5>
+    <hr>
+    <div class="row" id="subcategory-row"></div>
 </div>

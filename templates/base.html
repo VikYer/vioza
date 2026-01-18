@@ -42,30 +42,63 @@
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
+    const cards = document.querySelectorAll('.category-card');
     const container = document.getElementById('subcategory-container');
     const row = document.getElementById('subcategory-row');
+    const title = document.getElementById('subcategory-title');
 
-    document.addEventListener('click', function (e) {
-        const card = e.target.closest('.category-card');
-        if (!card) return;
+    let activeCategory = null;
 
-        const subs = JSON.parse(card.dataset.subcategories);
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
 
-        row.innerHTML = '';
+            const categoryId = card.dataset.categoryId;
+            const categoryTitle = card.dataset.categoryTitle;
 
-        subs.forEach(sub => {
-            row.innerHTML += `
-                <div class="col-md-4 mb-2">
-                    <div class="list-group-item">
-                        ${sub.title}
-                    </div>
-                </div>
-            `;
+            // toggle (hide on double click)
+            if (activeCategory === categoryId) {
+                container.classList.add('d-none');
+                row.innerHTML = '';
+                title.innerHTML = '';
+                activeCategory = null;
+                return;
+            }
+
+            activeCategory = categoryId;
+
+            fetch(`/ajax/subcategories/${categoryId}/`)
+                .then(response => response.json())
+                .then(data => {
+
+                    // reset
+                    row.innerHTML = '';
+
+                    // CATEGORY TITLE
+                    title.innerHTML = `
+                        <a href="#"
+                           class="text-decoration-none">
+                            All in ${categoryTitle}
+                        </a>
+                    `;
+
+                    // SUBCATEGORIES
+                    data.subcategories.forEach(sub => {
+                        row.innerHTML += `
+                            <div class="col-md-4 col-lg-3 mb-2">
+                                <a href="#"
+                                   class="list-group-item list-group-item-action">
+                                    ${sub.title}
+                                </a>
+                            </div>
+                        `;
+                    });
+
+                    container.classList.remove('d-none');
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
         });
-
-        container.classList.remove('d-none');
     });
 
 });
