@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from django.core.cache import cache
 
 from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
@@ -109,6 +110,9 @@ class Subcategory(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        cache.clear()
+
         return super().save(*args, **kwargs)
 
 
