@@ -34,6 +34,8 @@ MANIFEST
 .venv
 env/
 venv/
+.env/
+.venv/
 ENV/
 env.bak/
 venv.bak/
@@ -71,6 +73,9 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Django cache:
+vioza_caches/
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -107,15 +112,6 @@ celerybeat.pid
 
 # SageMath
 *.sage.py
-
-# Environments
-.env/
-.venv/
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
 
 # Spyder project settings
 .spyderproject
