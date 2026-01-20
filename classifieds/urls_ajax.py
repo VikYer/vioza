@@ -6,6 +6,6 @@ from .views_ajax import subcategories_ajax
 app_name = 'ajax'
 
 urlpatterns = [
-    path("subcategories/<int:category_id>/", cache_page(60 * 60 * 24 * 30)(subcategories_ajax),
+    path("subcategories/<int:category_id>/", cache_page(60 * 60)(subcategories_ajax),
          name="subcategories_ajax"),
 ]

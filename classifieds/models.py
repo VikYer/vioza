@@ -94,7 +94,14 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        cache.delete('categories_with_subcategories')
+        return result
+
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        cache.delete('categories_with_subcategories')
+        return result
 
 
 class Subcategory(models.Model):
@@ -110,11 +117,15 @@ class Subcategory(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        result = super().save(*args, **kwargs)
+        cache.delete('categories_with_subcategories')
 
-        cache.clear()
+        return result
 
-        return super().save(*args, **kwargs)
-
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        cache.delete('categories_with_subcategories')
+        return result
 
 def ad_images_upload_to(instance, filename) -> str:
     """
