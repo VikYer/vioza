@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls', namespace='index')),
     path('ajax/', include('classifieds.urls_ajax', namespace='ajax')),
+    path('ads/', include('classifieds.urls', namespace='ads')),
 ]
 
 if settings.DEBUG:

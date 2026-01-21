@@ -1,5 +1,7 @@
 import os
 from io import BytesIO
+from unicodedata import category
+
 from django.core.cache import cache
 
 from PIL import Image, ImageOps
@@ -10,6 +12,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.timezone import now
+from django.urls import reverse
 
 
 class PublishedManager(models.Manager):
@@ -103,6 +106,11 @@ class Category(models.Model):
         cache.delete('categories_with_subcategories')
         return result
 
+    def get_absolute_url(self):
+        return reverse(
+            'ads:ads_by_category',
+            args=[self.slug]
+        )
 
 class Subcategory(models.Model):
     title = models.CharField(max_length=100)
@@ -126,6 +134,16 @@ class Subcategory(models.Model):
         result = super().delete(*args, **kwargs)
         cache.delete('categories_with_subcategories')
         return result
+
+    def get_absolute_url(self):
+        return reverse(
+            'ads:ads_by_subcategory',
+            args=[
+                self,category.slug,
+                self.slug
+            ]
+        )
+
 
 def ad_images_upload_to(instance, filename) -> str:
     """
