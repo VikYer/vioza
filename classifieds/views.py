@@ -6,7 +6,7 @@ from .models import Ad, Category, Subcategory
 
 class AdListView(ListView):
     model = Ad
-    template_name = 'classifieds/ads_list.html'
+    template_name = 'classified/ads_list.html'
     context_object_name = 'ads'
 
     def get_queryset(self):

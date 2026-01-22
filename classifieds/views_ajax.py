@@ -7,7 +7,10 @@ def subcategories_ajax(request, category_id):
 
     data = {
         "subcategories": [
-            {"id": sub.id, "title": sub.title}
+            {
+                "title": sub.title,
+                "slug": sub.slug
+            }
             for sub in subs
         ]
     }
