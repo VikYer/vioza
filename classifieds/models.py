@@ -6,6 +6,7 @@ from django.core.cache import cache
 
 from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from django.conf import settings
@@ -43,7 +44,9 @@ class Ad(models.Model):
                                     blank=True,
                                     null=True,
                                     related_name='ads')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10,
+                                validators=[MinValueValidator(0)],
+                                decimal_places=2)
     favorites = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        blank=True,
                                        related_name='favorite_ads')
