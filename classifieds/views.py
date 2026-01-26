@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 
 from .models import Ad, Category, Subcategory
+from .forms import AdAddForm
 
 
 class AdListView(ListView):
@@ -27,3 +28,9 @@ class AdListView(ListView):
             queryset = queryset.filter(subcategory=self.subcategory)
 
         return queryset.order_by('-publish')
+
+
+class CreateAd(CreateView):
+    form_class = AdAddForm
+    template_name = 'classified/create_ad_form.html'
+    extra_context = {'title': 'Create Ad'}
