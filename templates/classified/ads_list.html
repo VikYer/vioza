@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="col-12">
+        {% for ad in ads %}
+            <div class="card mb-3">
+                <div class="card-body dflex flex-column justify-content-between">
+                    <div class="d-flex align-items-start">
+                        {% if ad.image %}
+                        <img src="" alt="" class="float-start rounded">
+                        {% endif %}
+                        <div>
+                            <a href="{{ ad.get_absolute_url }}" class="stretched-link">
+                                <h5 class="card-title ms-3 mt-2 mb-4">
+                                    {{ ad }}
+                                </h5>
+                            </a>
+                            <div class="card-text ms-3">
+                                <p>{{ ad.subcategory }}</p>
+                                <p>{{ ad.city }}</p>
+                                <p>{{ ad.created }}</p>
+                            </div>
+                            <div>
+                                <h4>{{ ad.price }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
