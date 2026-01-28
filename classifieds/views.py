@@ -29,6 +29,18 @@ class AdListView(ListView):
 
         return queryset.order_by('-publish')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.subcategory:
+            context['title'] = f'{self.subcategory.title} in {self.category.title}'
+        elif self.category:
+            context['title'] = self.category.title
+        else:
+            context['title'] = 'All ads'
+
+        return context
+
 
 class CreateAd(CreateView):
     form_class = AdAddForm
