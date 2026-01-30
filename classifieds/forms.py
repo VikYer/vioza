@@ -21,8 +21,8 @@ class AdAddForm(forms.ModelForm):
            'category': forms.Select(attrs={'class': 'form-control', 'id': 'id_category'}),
            'subcategory': forms.Select(attrs={'class': 'form-control', 'id': 'id_subcategory'}),
            'price': forms.NumberInput(attrs={'class': 'form-control'}),
-           'region': forms.Select(attrs={'class': 'form-control', 'id': 'region'}),
-           'city':  forms.Select(attrs={'class': 'form-control', 'id': 'city'}),
+           'region': forms.Select(attrs={'class': 'form-control', 'id': 'id_region'}),
+           'city':  forms.Select(attrs={'class': 'form-control', 'id': 'id_city'}),
            'description': forms.Textarea(attrs={'class': 'form-control'}),
            'status': forms.Select(attrs={'class': 'form-control'})
        }
