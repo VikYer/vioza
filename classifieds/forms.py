@@ -1,5 +1,7 @@
 from django import forms
-from .models import Ad, Subcategory, City
+from django.forms.models import inlineformset_factory
+
+from .models import Ad, Subcategory, City, AdImage
 
 
 class AdAddForm(forms.ModelForm):
@@ -32,3 +34,14 @@ class AdAddForm(forms.ModelForm):
 
         self.fields['subcategory'].queryset = Subcategory.objects.none()
         self.fields['city'].queryset = City.objects.none()
+
+
+AdImageFormSet = inlineformset_factory(
+    Ad,
+    AdImage,
+    fields=('image',),
+    extra=7,
+    max_num=7,
+    validate_max=True,
+    can_delete=False,
+)

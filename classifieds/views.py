@@ -1,8 +1,10 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
 from .models import Ad, Category, Subcategory
-from .forms import AdAddForm
+from .forms import AdAddForm, AdImageFormSet
 
 
 class AdListView(ListView):
@@ -43,6 +45,36 @@ class AdListView(ListView):
 
 
 class CreateAd(CreateView):
+    model = Ad
     form_class = AdAddForm
     template_name = 'classified/create_ad_form.html'
     extra_context = {'title': 'Create Ad'}
+    success_url = reverse_lazy('index:index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context['images_formset'] = AdImageFormSet(
+                self.request.POST,
+                self.request.FILES
+            )
+        else:
+            context['images_formset'] = AdImageFormSet()
+
+        return context
+
+    @transaction.atomic
+    def form_valid(self, form):
+        context = self.get_context_data()
+        images_formset = context['images_formset']
+
+        form.instance.author = self.request.user
+
+        if images_formset.is_valid():
+            self.object = form.save()
+            images_formset.instance = self.object
+            images_formset.save()
+            return super().form_valid(form)
+
+        return self.form_invalid(form)
