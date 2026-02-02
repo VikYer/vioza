@@ -11,6 +11,7 @@ class AdListView(ListView):
     model = Ad
     template_name = 'classified/ads_list.html'
     context_object_name = 'ads'
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Ad.published.select_related('category', 'subcategory')
