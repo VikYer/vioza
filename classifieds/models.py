@@ -3,17 +3,17 @@ from io import BytesIO
 from unicodedata import category
 
 from django.core.cache import cache
-
-from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator
 from django.db import models
-
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.urls import reverse
+
+from PIL import Image, ImageOps
+from taggit.managers import TaggableManager
 
 
 class PublishedManager(models.Manager):
@@ -70,6 +70,7 @@ class Ad(models.Model):
 
     objects = models.Manager()
     published = PublishedManager()
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('-publish',)
@@ -115,6 +116,7 @@ class Category(models.Model):
             args=[self.slug]
         )
 
+
 class Subcategory(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -142,7 +144,7 @@ class Subcategory(models.Model):
         return reverse(
             'ads:ads_by_subcategory',
             args=[
-                self,category.slug,
+                self, category.slug,
                 self.slug
             ]
         )
