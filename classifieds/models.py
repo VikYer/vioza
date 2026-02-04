@@ -70,7 +70,7 @@ class Ad(models.Model):
 
     objects = models.Manager()
     published = PublishedManager()
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     class Meta:
         ordering = ('-publish',)

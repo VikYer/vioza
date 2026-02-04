@@ -1,35 +1,45 @@
 from django import forms
 from django.forms.models import inlineformset_factory
+from taggit.models import Tag
 
 from .models import Ad, Subcategory, City, AdImage
 
 
 class AdAddForm(forms.ModelForm):
-   class Meta:
-       model = Ad
-       fields = (
-           'title',
-           'category',
-           'subcategory',
-           'price',
-           'region',
-           'city',
-           'description',
-           'status',
-       )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Additional options',
+        help_text='You can select one or more options that apply to your ad.',
+    )
 
-       widgets = {
-           'title': forms.TextInput(attrs={'class': 'form-control'}),
-           'category': forms.Select(attrs={'class': 'form-control', 'id': 'id_category'}),
-           'subcategory': forms.Select(attrs={'class': 'form-control', 'id': 'id_subcategory'}),
-           'price': forms.NumberInput(attrs={'class': 'form-control'}),
-           'region': forms.Select(attrs={'class': 'form-control', 'id': 'id_region'}),
-           'city':  forms.Select(attrs={'class': 'form-control', 'id': 'id_city'}),
-           'description': forms.Textarea(attrs={'class': 'form-control'}),
-           'status': forms.Select(attrs={'class': 'form-control'})
-       }
+    class Meta:
+        model = Ad
+        fields = (
+            'title',
+            'category',
+            'subcategory',
+            'price',
+            'region',
+            'city',
+            'description',
+            'status',
+            'tags',
+        )
 
-   def __init__(self, *args, **kwargs):
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control', 'id': 'id_category'}),
+            'subcategory': forms.Select(attrs={'class': 'form-control', 'id': 'id_subcategory'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'region': forms.Select(attrs={'class': 'form-control', 'id': 'id_region'}),
+            'city': forms.Select(attrs={'class': 'form-control', 'id': 'id_city'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['subcategory'].queryset = Subcategory.objects.none()

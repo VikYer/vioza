@@ -1,5 +1,4 @@
 from django.contrib import admin
-from taggit.models import Tag
 
 from .models import Ad, Category, Subcategory, AdImage, Region, City
 
