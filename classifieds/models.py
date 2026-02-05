@@ -89,6 +89,15 @@ class Ad(models.Model):
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse(
+            'ads:ad_detail',
+            args=[
+                self.slug,
+                self.pk
+            ]
+        )
+
 
 class Category(models.Model):
     title = models.CharField(max_length=50)

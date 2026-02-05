@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, DetailView, CreateView
 
 from .models import Ad, Category, Subcategory
 from .forms import AdAddForm, AdImageFormSet
@@ -43,6 +43,17 @@ class AdListView(ListView):
             context['title'] = 'All ads'
 
         return context
+
+
+class AdDetailView(DetailView):
+    model = Ad
+    template_name = 'classified/ad_detail.html'
+    context_object_name = 'ad'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        ad = self.object
+        context['title'] = ad
 
 
 class CreateAd(CreateView):

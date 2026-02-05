@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AdListView, CreateAd
+from .views import AdListView, CreateAd, AdDetailView
 
 app_name = 'classifieds'
 
@@ -20,4 +20,9 @@ urlpatterns = [
         AdListView.as_view(),
         name='ads_by_subcategory'
     ),
+    path(
+        '<slug:ad_slug>-<int:ad_id>/',
+        AdDetailView.as_view(),
+        name='ad_detail'
+    )
 ]
