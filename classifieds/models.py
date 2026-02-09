@@ -201,6 +201,9 @@ class AdImage(models.Model):
                                   blank=True)
     is_main = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('-is_main', 'id')
+
     def __str__(self):
         return f'{self.ad.title}_{self.pk}'
 

@@ -86,7 +86,17 @@ class CreateAd(CreateView):
         if images_formset.is_valid():
             self.object = form.save()
             images_formset.instance = self.object
-            images_formset.save()
+
+            images = images_formset.save(commit=False)
+
+            if not any(img.is_main for img in images):
+                if images:
+                    images[0].is_main = True
+
+            for img in images:
+                img.ad = self.object
+                img.save()
+
             return super().form_valid(form)
 
         return self.form_invalid(form)

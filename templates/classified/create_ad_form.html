@@ -20,9 +20,15 @@
                     {{images_formset.management_form}}
 
                     {% for form in images_formset %}
-                    <div class="mb-1">
+                    <div class="card mb-2 p-2">
                         {{ form.image.label_tag }}
                         {{ form.image }}
+                        <div class="form-check mt-2">
+                            {{ form.is_main }}
+                            <label class="form-check-label">
+                                Set as main page
+                            </label>
+                        </div>
                         {{ form.errors }}
                     </div>
                     {% endfor %}
