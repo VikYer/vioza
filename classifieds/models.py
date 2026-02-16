@@ -32,6 +32,13 @@ class Ad(models.Model):
     slug = models.SlugField(db_index=True,
                             blank=True,
                             editable=False)
+    main_page = models.ForeignKey(
+        'AdImage',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     author = models.ForeignKey(settings.AUTH_USER_MODEL,
                                on_delete=models.CASCADE,
                                related_name='ads')
@@ -199,10 +206,6 @@ class AdImage(models.Model):
                                   editable=False,
                                   null=True,
                                   blank=True)
-    is_main = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ('-is_main', 'id')
 
     def __str__(self):
         return f'{self.ad.title}_{self.pk}'

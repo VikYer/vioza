@@ -40,8 +40,8 @@ class SubcategoryAdmin(admin.ModelAdmin):
 
 @admin.register(AdImage)
 class AdImageAdmin(admin.ModelAdmin):
-    list_display = ('ad', 'id', 'is_main')
-    list_filter = ('ad', 'is_main')
+    list_display = ('ad', 'id',)
+    list_filter = ('ad',)
     readonly_fields = ('id',)
     list_display_links = ('ad',)
 

@@ -19,17 +19,22 @@
                     <h5>Images (max 7)</h5>
                     {{images_formset.management_form}}
 
-                    {% for form in images_formset %}
+                    {% for image_form in images_formset %}
                     <div class="card mb-2 p-2">
-                        {{ form.image.label_tag }}
-                        {{ form.image }}
+                        {{ image_form.image.label_tag }}
+                        {{ image_form.image }}
                         <div class="form-check mt-2">
-                            {{ form.is_main }}
+                            <input
+                                    type="radio"
+                                    name="main_image"
+                                    value="{{ forloop.counter0 }}"
+                                    class="form-check-input"
+                            >
                             <label class="form-check-label">
-                                Set as main page
+                                Set as main image
                             </label>
                         </div>
-                        {{ form.errors }}
+                        {{ image_form.errors }}
                     </div>
                     {% endfor %}
 

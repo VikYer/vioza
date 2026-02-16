@@ -85,17 +85,18 @@ class CreateAd(CreateView):
 
         if images_formset.is_valid():
             self.object = form.save()
+
             images_formset.instance = self.object
+            images = images_formset.save()
 
-            images = images_formset.save(commit=False)
+            main_index = self.request.POST.get('main_page')
 
-            if not any(img.is_main for img in images):
-                if images:
-                    images[0].is_main = True
+            if main_index is not None:
+                main_index = int(main_index)
 
-            for img in images:
-                img.ad = self.object
-                img.save()
+                if 0 <= main_index < len(images):
+                    self.object.main_page = images[main_index]
+                    self.object.save(update_fields=['main_page'])
 
             return super().form_valid(form)
 

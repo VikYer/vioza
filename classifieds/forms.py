@@ -46,38 +46,16 @@ class AdAddForm(forms.ModelForm):
         self.fields['city'].queryset = City.objects.none()
 
 
-class BaseAdImageFormSet(BaseInlineFormSet):
-    def clean(self):
-        super().clean()
-
-        main_selected = False
-
-        for form in self.forms:
-            if not form.cleaned_date:
-                continue
-
-            if form.cleaned_date.get('is_main'):
-                if main_selected:
-                    raise form.ValidationError(
-                        'You can select only one main image.'
-                    )
-                main_selected = True
-
-
 class AdImageForm(forms.ModelForm):
     class Meta:
         model = AdImage
-        fields = ('image', 'is_main')
-        widgets = {
-            'is_main': forms.RadioSelect(choices=[(True, 'Main')])
-        }
+        fields = ('image',)
 
 
 AdImageFormSet = inlineformset_factory(
     Ad,
     AdImage,
     form=AdImageForm,
-    formset=BaseAdImageFormSet,
     extra=7,
     max_num=7,
     validate_max=True,

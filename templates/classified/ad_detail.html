@@ -39,10 +39,19 @@
                         aria-label="Slide 3"></button>
             </div>
             <div class="carousel-inner">
-                {% for image in ad.images.all %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <img src="{{ image.image_url }}" class="d-block w-100" alt="...">
+                {% if ad.main_page %}
+                <div class="carousel-item active">
+                    <img src="{{ ad.main_page.image_webp.url }}" class="d-block w-100" alt="...">
                 </div>
+                {% endif %}
+
+
+                {% for image in ad.images.all %}
+                {% if image != ad.main_image %}
+                <div class="carousel-item">
+                    <img src="{{ image.image_webp.url }}" class="d-block w-100">
+                </div>
+                {% endif %}
                 {% endfor %}
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
