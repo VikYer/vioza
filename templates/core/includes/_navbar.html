@@ -1,9 +1,12 @@
 {% load static %}
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
-    <div class="container container-fluid justify-content-between">
+    <div class="container container-fluid justify-content-between align-items-center">
         <div>
-            <a class="navbar-brand" href="#">VIOZA</a>
+            <a class="navbar-brand" href="{% url 'index:index' %}">
+                <img src="{% static 'logo/vioza.png' %}" alt="Vioza" height="80"
+                     class="d-inline-block align-text-top">
+            </a>
         </div>
         <div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
